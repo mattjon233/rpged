@@ -1,0 +1,994 @@
+<!doctype html>
+<html lang="en" data-lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title data-pt="RPGed · Mesa virtual com mestre de IA">RPGed · A virtual tabletop with an AI Game Master</title>
+    <meta
+      name="description"
+      content="RPGed is a virtual tabletop run by an AI Game Master: voice narration, cheat-proof 3D dice, 3D maps with fog of war and a campaign memory that carries over from session to session."
+      data-i18n-attr="content"
+      data-pt-content="O RPGed é uma mesa virtual conduzida por um mestre de IA: narração com voz, dados 3D sem trapaça, mapas 3D com névoa de guerra e uma memória de campanha que atravessa as sessões."
+    />
+    <meta name="theme-color" content="#050305" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <link rel="alternate" hreflang="en" href="https://rpged.com.br/?lang=en" />
+    <link rel="alternate" hreflang="pt-BR" href="https://rpged.com.br/?lang=pt" />
+    <link rel="alternate" hreflang="x-default" href="https://rpged.com.br/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="RPGed" />
+    <meta property="og:url" content="https://rpged.com.br/" />
+    <meta property="og:title" content="RPGed · A virtual tabletop with an AI Game Master" />
+    <meta property="og:description" content="Voice narration, cheat-proof 3D dice, 3D maps with fog of war and a Game Master that remembers your campaign." />
+    <meta property="og:image" content="https://rpged.com.br/og.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="pt_BR" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preload" href="assets/fonts/saira-extra-condensed-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="assets/fonts/rajdhani-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="assets/css/site.css" />
+    <noscript>
+      <style>
+        .stage__poster {
+          background: url('assets/img/hero-poster.webp') 62% center / cover no-repeat;
+        }
+      </style>
+    </noscript>
+    <script>
+      (function () {
+        var root = document.documentElement;
+        var lang = 'en';
+        try {
+          var asked = new URLSearchParams(location.search).get('lang');
+          var saved = localStorage.getItem('rpged.lang');
+          lang = (asked || saved || navigator.language || 'en').toLowerCase().indexOf('pt') === 0 ? 'pt' : 'en';
+        } catch (error) {}
+        root.classList.add('js');
+        root.setAttribute('data-lang', lang);
+        if (lang === 'pt') {
+          root.lang = 'pt-BR';
+          root.classList.add('i18n-wait');
+          setTimeout(function () {
+            root.classList.remove('i18n-wait');
+          }, 1500);
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip" href="#main" data-pt="Pular para o conteúdo">Skip to content</a>
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true" focusable="false">
+      <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></symbol>
+      <symbol id="i-audio-lines" viewBox="0 0 24 24"><path d="M2 10v3"/><path d="M6 6v11"/><path d="M10 3v18"/><path d="M14 8v7"/><path d="M18 5v13"/><path d="M22 10v3"/></symbol>
+      <symbol id="i-book-text" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"/><path d="M8 11h8"/><path d="M8 7h6"/></symbol>
+      <symbol id="i-brain" viewBox="0 0 24 24"><path d="M12 18V5"/><path d="M15 13a4.17 4.17 0 0 1-3-4 4.17 4.17 0 0 1-3 4"/><path d="M17.598 6.5A3 3 0 1 0 12 5a3 3 0 1 0-5.598 1.5"/><path d="M17.997 5.125a4 4 0 0 1 2.526 5.77"/><path d="M18 18a4 4 0 0 0 2-7.464"/><path d="M19.967 17.483A4 4 0 1 1 12 18a4 4 0 1 1-7.967-.517"/><path d="M6 18a4 4 0 0 1-2-7.464"/><path d="M6.003 5.125a4 4 0 0 0-2.526 5.77"/></symbol>
+      <symbol id="i-car" viewBox="0 0 24 24"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></symbol>
+      <symbol id="i-cloud-fog" viewBox="0 0 24 24"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M16 17H7"/><path d="M17 21H9"/></symbol>
+      <symbol id="i-cloud-rain" viewBox="0 0 24 24"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M16 14v6"/><path d="M8 14v6"/><path d="M12 16v6"/></symbol>
+      <symbol id="i-coffee" viewBox="0 0 24 24"><path d="M10 2v2"/><path d="M14 2v2"/><path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1"/><path d="M6 2v2"/></symbol>
+      <symbol id="i-crosshair" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="22" x2="18" y1="12" y2="12"/><line x1="6" x2="2" y1="12" y2="12"/><line x1="12" x2="12" y1="6" y2="2"/><line x1="12" x2="12" y1="22" y2="18"/></symbol>
+      <symbol id="i-dices" viewBox="0 0 24 24"><rect width="12" height="12" x="2" y="10" rx="2" ry="2"/><path d="m17.92 14 3.5-3.5a2.24 2.24 0 0 0 0-3l-5-4.92a2.24 2.24 0 0 0-3 0L10 6"/><path d="M6 18h.01"/><path d="M10 14h.01"/><path d="M15 6h.01"/><path d="M18 9h.01"/></symbol>
+      <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path d="m2 2 20 20"/></symbol>
+      <symbol id="i-feather" viewBox="0 0 24 24"><path d="M14.086 18.412A2 2 0 0112.67 19H5v-7.672a2 2 0 01.586-1.414L11.75 3.75a6 6 0 118.49 8.49z"/><path d="M16 8 2 22"/><path d="M17.488 15H9"/></symbol>
+      <symbol id="i-gauge" viewBox="0 0 24 24"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></symbol>
+      <symbol id="i-graduation-cap" viewBox="0 0 24 24"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></symbol>
+      <symbol id="i-heart-pulse" viewBox="0 0 24 24"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/><path d="M3.22 13H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27"/></symbol>
+      <symbol id="i-layout-grid" viewBox="0 0 24 24"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></symbol>
+      <symbol id="i-lock" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+      <symbol id="i-mail" viewBox="0 0 24 24"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/></symbol>
+      <symbol id="i-map" viewBox="0 0 24 24"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/></symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/></symbol>
+      <symbol id="i-message-square" viewBox="0 0 24 24"><path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"/></symbol>
+      <symbol id="i-mic" viewBox="0 0 24 24"><path d="M12 19v3"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><rect x="9" y="2" width="6" height="13" rx="3"/></symbol>
+      <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></symbol>
+      <symbol id="i-network" viewBox="0 0 24 24"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></symbol>
+      <symbol id="i-orbit" viewBox="0 0 24 24"><path d="M20.341 6.484A10 10 0 0 1 10.266 21.85"/><path d="M3.659 17.516A10 10 0 0 1 13.74 2.152"/><circle cx="12" cy="12" r="3"/><circle cx="19" cy="5" r="2"/><circle cx="5" cy="19" r="2"/></symbol>
+      <symbol id="i-pause" viewBox="0 0 24 24"><rect x="14" y="3" width="5" height="18" rx="1"/><rect x="5" y="3" width="5" height="18" rx="1"/></symbol>
+      <symbol id="i-phone" viewBox="0 0 24 24"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"/></symbol>
+      <symbol id="i-phone-incoming" viewBox="0 0 24 24"><path d="M16 2v6h6"/><path d="m22 2-6 6"/><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"/></symbol>
+      <symbol id="i-phone-off" viewBox="0 0 24 24"><path d="M10.1 13.9a14 14 0 0 0 3.732 2.668 1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2 18 18 0 0 1-12.728-5.272"/><path d="M22 2 2 22"/><path d="M4.76 13.582A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 .244.473"/></symbol>
+      <symbol id="i-play" viewBox="0 0 24 24"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/></symbol>
+      <symbol id="i-refresh-cw" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></symbol>
+      <symbol id="i-ruler" viewBox="0 0 24 24"><path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z"/><path d="m14.5 12.5 2-2"/><path d="m11.5 9.5 2-2"/><path d="m8.5 6.5 2-2"/><path d="m17.5 15.5 2-2"/></symbol>
+      <symbol id="i-scroll-text" viewBox="0 0 24 24"><path d="M15 12h-5"/><path d="M15 8h-5"/><path d="M19 17V5a2 2 0 0 0-2-2H4"/><path d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3"/></symbol>
+      <symbol id="i-send" viewBox="0 0 24 24"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></symbol>
+      <symbol id="i-shield-check" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></symbol>
+      <symbol id="i-smartphone" viewBox="0 0 24 24"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></symbol>
+      <symbol id="i-timer" viewBox="0 0 24 24"><line x1="10" x2="14" y1="2" y2="2"/><line x1="12" x2="15" y1="14" y2="11"/><circle cx="12" cy="14" r="8"/></symbol>
+      <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></symbol>
+      <symbol id="i-volume-2" viewBox="0 0 24 24"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.364 18.364a9 9 0 0 0 0-12.728"/></symbol>
+      <symbol id="i-wand-sparkles" viewBox="0 0 24 24"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></symbol>
+    </svg>
+
+    <header class="nav" id="nav">
+      <a class="brand" href="#top" aria-label="RPGed">
+        <svg class="brand__mark" viewBox="0 0 64 64" aria-hidden="true">
+          <polygon points="32,3 58,17.5 58,46.5 32,61 6,46.5 6,17.5" fill="#12050a" stroke="#ff1f3d" stroke-width="4" />
+          <path d="M22 44V20h12c6 0 9 3 9 7.5S40 35 34 35h-5l10 9" fill="none" stroke="#ff1f3d" stroke-width="5" stroke-linejoin="round" stroke-linecap="square" />
+        </svg>
+        <span class="brand__word">RPG<b>ed</b></span>
+      </a>
+      <nav class="nav__links" aria-label="Sections" data-i18n-attr="aria-label" data-pt-aria-label="Seções">
+        <a href="#gm" data-pt="O mestre">The GM</a>
+        <a href="#table" data-pt="A mesa">The table</a>
+        <a href="#mechanics" data-pt="Mecânicas">Mechanics</a>
+        <a href="#maps" data-pt="Mapas">Maps</a>
+        <a href="#play" data-pt="Como funciona">How it works</a>
+      </nav>
+      <div class="nav__side">
+        <details class="menu" id="menu">
+          <summary aria-label="Menu"><svg class="ico" aria-hidden="true"><use href="#i-menu" /></svg></summary>
+          <nav class="menu__panel" aria-label="Sections" data-i18n-attr="aria-label" data-pt-aria-label="Seções">
+            <a href="#gm" data-pt="O mestre">The GM</a>
+            <a href="#table" data-pt="A mesa">The table</a>
+            <a href="#mechanics" data-pt="Mecânicas">Mechanics</a>
+            <a href="#maps" data-pt="Mapas">Maps</a>
+            <a href="#play" data-pt="Como funciona">How it works</a>
+            <a class="menu__cta" href="mailto:founder@rpged.com.br" data-pt="Fale com a gente">Contact us</a>
+          </nav>
+        </details>
+        <div class="lang" role="group" aria-label="Language" data-i18n-attr="aria-label" data-pt-aria-label="Idioma">
+          <button type="button" data-set-lang="pt" aria-pressed="false" aria-label="PT, Português" lang="pt-BR">PT</button>
+          <button type="button" data-set-lang="en" aria-pressed="true" aria-label="EN, English" lang="en">EN</button>
+        </div>
+        <a class="btn btn--primary btn--sm" href="mailto:founder@rpged.com.br" data-pt="Contato">Contact us</a>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero" id="top">
+        <div class="stage" id="stage" aria-hidden="true">
+          <div class="stage__poster"></div>
+          <canvas class="stage__canvas" id="stage-canvas"></canvas>
+          <div class="stage__cut"></div>
+          <div class="stage__shade"></div>
+          <div class="stage__tags" id="stage-tags"></div>
+          <div class="hud" id="hud">
+            <div class="hud__top">
+              <span class="hud-chip hud-chip--clock" data-pt-html="<b>Dia</b> 03 · Noite · Cap. 2"><b>Day</b> 03 · Night · Ch. 2</span>
+              <span class="hud-chip hud-chip--music" id="hud-music"><i class="eq"><i></i><i></i><i></i><i></i></i><span id="hud-music-name" data-pt="Tensão">Tension</span></span>
+              <span class="hud-chip hud-chip--combat" id="hud-combat" hidden data-pt="Combate · Rodada 1">Combat · Round 1</span>
+            </div>
+            <ol class="hud-init" id="hud-init" hidden></ol>
+            <div class="hud__gap"></div>
+            <div class="hud-vote cut cut--cyan" id="hud-vote" hidden>
+              <div class="hud-vote__label" data-pt="Fim do capítulo 2">End of chapter 2</div>
+              <div class="hud-vote__title" data-pt="O fliperama das três">The three a.m. arcade</div>
+              <div class="hud-vote__ask" data-pt="Continuar jogando ou parar por hoje?">Keep playing or stop for today?</div>
+              <div class="hud-vote__row" id="hud-voters"></div>
+              <div class="hud-vote__result" id="hud-vote-result"></div>
+            </div>
+            <div class="hud-roll" id="hud-roll" hidden>
+              <div class="hud-roll__label" id="hud-roll-label"></div>
+              <div class="hud-roll__row">
+                <span id="hud-roll-dice" style="display: flex; gap: 6px"></span>
+                <span class="hud-roll__total" id="hud-roll-total"></span>
+              </div>
+              <div class="hud-roll__math" id="hud-roll-math"></div>
+            </div>
+            <div class="hud-cap" id="hud-cap" hidden>
+              <div class="hud-cap__who" id="hud-cap-who"></div>
+              <p class="hud-cap__text" id="hud-cap-text"></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="wrap">
+          <div class="hero__copy">
+            <p class="kicker" data-pt="Mesa virtual · Mestre de IA">Virtual tabletop · AI Game Master</p>
+            <h1 data-pt-html="<span>Toda mesa</span> <span>merece um</span> <em>mestre.</em>"><span>Every table</span> <span>deserves a</span> <em>Game Master.</em></h1>
+            <p class="hero__sub" data-pt="O RPGed é uma mesa virtual conduzida por um mestre de IA. Ele narra em voz alta, interpreta cada NPC, rola os dados sem trapaça e lembra da sua campanha de uma sessão para a outra.">
+              RPGed is a virtual tabletop run by an AI Game Master. It narrates out loud, plays every NPC, rolls dice nobody can fudge and remembers your campaign from one session to the next.
+            </p>
+            <p class="hero__status"><i class="live-dot"></i><b data-pt="Em breve">Coming soon</b><span data-pt="Em desenvolvimento · alfa previsto: 1º tri 2027">In development · alpha expected Q1 2027</span></p>
+            <div class="hero__cta">
+              <span class="btn-glow"
+                ><a class="btn btn--primary" href="mailto:founder@rpged.com.br"
+                  ><svg class="ico" aria-hidden="true"><use href="#i-mail" /></svg><span data-pt="Fale com a gente">Contact us</span></a
+                ></span
+              >
+              <a class="btn btn--ghost" href="#gm"
+                ><span data-pt="Ver o mestre em ação">See how it plays</span><svg class="ico" aria-hidden="true"><use href="#i-arrow-down" /></svg
+              ></a>
+            </div>
+            <ul class="hero__facts">
+              <li data-pt="Roda no navegador">Runs in the browser</li>
+              <li data-pt="PC, tablet e celular">Desktop, tablet and phone</li>
+              <li data-pt="Até 6 jogadores por mesa">Up to 6 players per table</li>
+            </ul>
+          </div>
+        </div>
+        <div class="hero__ctl">
+          <button class="pause" type="button" id="motion-toggle" aria-pressed="false" hidden>
+            <svg class="ico pause__off" aria-hidden="true"><use href="#i-pause" /></svg><svg class="ico pause__on" aria-hidden="true"><use href="#i-play" /></svg><span class="pause__off" data-pt="Pausar animações">Pause animations</span
+            ><span class="pause__on" data-pt="Retomar animações">Resume animations</span>
+          </button>
+          <p class="hero__hint" aria-hidden="true"><i class="live-dot"></i><span data-pt="3D em tempo real · arraste para girar">Real-time 3D · drag to look around</span></p>
+        </div>
+      </section>
+
+      <section class="soon" id="soon">
+        <div class="wrap soon__grid">
+          <div data-reveal>
+            <p class="kicker" data-pt="Em breve">Coming soon</p>
+            <h2 class="h3" data-pt-html="O RPGed está <em>em desenvolvimento.</em>">RPGed is currently <em>in development.</em></h2>
+          </div>
+          <p class="lead" data-reveal style="--d: 1" data-pt="Estamos construindo uma plataforma de mesa virtual com IA em que um mestre que não esquece conduz campanhas, mantém o estado do mundo e conta histórias imersivas para vários jogadores.">
+            We're building an AI-powered virtual tabletop platform where a persistent Game Master can run campaigns, remember world state, and provide immersive multiplayer storytelling.
+          </p>
+          <div class="eta cut cut--yellow" data-reveal style="--d: 2">
+            <span class="eta__label" data-pt="Alfa previsto">Expected alpha</span>
+            <b class="eta__when" data-pt="1º tri 2027">Q1 2027</b>
+            <a class="btn btn--sm" href="mailto:founder@rpged.com.br"
+              ><svg class="ico" aria-hidden="true"><use href="#i-mail" /></svg><span data-pt="Fale com a gente">Contact us</span></a
+            >
+          </div>
+        </div>
+      </section>
+
+      <div class="ticker" aria-hidden="true">
+        <div class="ticker__track">
+          <div class="ticker__set">
+            <span data-pt="Mestre de IA">AI Game Master</span>
+            <span data-pt="Memória persistente">Persistent memory</span>
+            <span data-pt="Mapas 3D">3D maps</span>
+            <span data-pt="Dados com física">Dice with real physics</span>
+            <span data-pt="Narração com voz">Voice narration</span>
+            <span data-pt="Trilha sincronizada">Synced soundtrack</span>
+            <span data-pt="Névoa de guerra">Fog of war</span>
+            <span data-pt="Linha de visão">Line of sight</span>
+            <span data-pt="Grupo dividido">Split-party scenes</span>
+            <span data-pt="Celular e tablet">Phone and tablet</span>
+          </div>
+          <div class="ticker__set">
+            <span data-pt="Mestre de IA">AI Game Master</span>
+            <span data-pt="Memória persistente">Persistent memory</span>
+            <span data-pt="Mapas 3D">3D maps</span>
+            <span data-pt="Dados com física">Dice with real physics</span>
+            <span data-pt="Narração com voz">Voice narration</span>
+            <span data-pt="Trilha sincronizada">Synced soundtrack</span>
+            <span data-pt="Névoa de guerra">Fog of war</span>
+            <span data-pt="Linha de visão">Line of sight</span>
+            <span data-pt="Grupo dividido">Split-party scenes</span>
+            <span data-pt="Celular e tablet">Phone and tablet</span>
+          </div>
+        </div>
+      </div>
+
+      <section class="sec" id="gm">
+        <span class="sec__no" aria-hidden="true">01</span>
+        <div class="wrap">
+          <header class="sec__head" data-reveal>
+            <p class="kicker" data-pt="01 · O mestre">01 · The Game Master</p>
+            <h2 class="h2" data-pt-html="Ele narra, interpreta e <em>não perde o fio.</em>">It narrates, plays every role and <em>never drops the thread.</em></h2>
+            <p class="lead" data-pt="O mestre é uma IA construída sobre o Claude, o modelo da Anthropic, sentada à mesma mesa que os jogadores. Ele conduz a cena inteira, do clima ao último tiro, e reage na hora ao que a mesa decide.">
+              The Game Master is an AI built on Claude, Anthropic's model, seated at the same table as the players. It runs the whole scene, from the mood to the last shot, and reacts in real time to what the table decides.
+            </p>
+          </header>
+
+          <div class="split split--top">
+            <div class="console cut" id="console" aria-hidden="true" data-reveal>
+              <div class="console__bar"><i class="live-dot"></i><b data-pt="mestre">game master</b><span data-pt="exemplo">example</span></div>
+              <ol class="console__feed">
+                <li class="cl">
+                  <span class="cl__cmd" data-pt="narrar">narrate</span>
+                  <span class="cl__txt"><span data-pt="A chuva engrossa. O letreiro do fliperama pisca duas vezes e apaga.">The rain picks up. The arcade sign flickers twice and goes dark.</span><small data-pt="legenda no mapa, lida em voz alta">caption on the map, read aloud</small></span>
+                </li>
+                <li class="cl cl--npc">
+                  <span class="cl__cmd" data-pt="falar">speak</span>
+                  <span class="cl__txt"
+                    ><span data-pt="“Vocês têm dez minutos. Depois disso, eu não conheço ninguém.”">“You've got ten minutes. After that, I don't know any of you.”</span
+                    ><small><i class="wave"><i></i><i></i><i></i><i></i><i></i><i></i></i><span data-pt="como Celeste, com a voz dela">as Celeste, in her own voice</span></small></span
+                  >
+                </li>
+                <li class="cl cl--whisper">
+                  <span class="cl__cmd" data-pt="sussurrar">whisper</span>
+                  <span class="cl__txt"><span data-pt="Só você percebe a câmera virando para a porta.">Only you notice the camera turning toward the door.</span><small data-pt="só a Nara vê isto">only Nara sees this</small></span>
+                </li>
+                <li class="cl cl--roll">
+                  <span class="cl__cmd" data-pt="pedir teste">ask for a roll</span>
+                  <span class="cl__txt"><span data-pt="Ravi, Percepção contra dificuldade 15.">Ravi, Perception against difficulty 15.</span><small data-pt="o dado rola no servidor">the die rolls on the server</small></span>
+                </li>
+                <li class="cl cl--music">
+                  <span class="cl__cmd" data-pt="trilha">soundtrack</span>
+                  <span class="cl__txt"><span data-pt="Tensão, entrando aos poucos para todo mundo.">Tension, fading in for everyone.</span></span>
+                </li>
+                <li class="cl cl--map">
+                  <span class="cl__cmd" data-pt="mapa">map</span>
+                  <span class="cl__txt"><span data-pt="Abrir a porta dos fundos e tirar a névoa do escritório.">Open the back door and lift the fog from the office.</span></span>
+                </li>
+                <li class="cl cl--note">
+                  <span class="cl__cmd" data-pt="anotar">note</span>
+                  <span class="cl__txt"><span data-pt="A equipe deve um favor à Celeste.">The crew owes Celeste a favor.</span><small data-pt="volta na próxima sessão">comes back next session</small></span>
+                </li>
+              </ol>
+            </div>
+
+            <ul class="feats">
+              <li class="feat" data-reveal style="--d: 1">
+                <span class="hex hex--yellow"><svg class="ico" aria-hidden="true"><use href="#i-volume-2" /></svg></span>
+                <h3 data-pt="Voz e legenda">Voice and captions</h3>
+                <p data-pt="Cada narração aparece como legenda sobre o mapa e é lida em voz alta, em português, no navegador de cada jogador.">Every line of narration shows up as a caption over the map and is read aloud in each player's browser. For now, the voice speaks Brazilian Portuguese.</p>
+              </li>
+              <li class="feat" data-reveal style="--d: 2">
+                <span class="hex hex--green"><svg class="ico" aria-hidden="true"><use href="#i-audio-lines" /></svg></span>
+                <h3 data-pt="Uma voz para cada NPC">A voice for every NPC</h3>
+                <p data-pt="Os NPCs falam com o próprio nome e o próprio timbre. Dá para saber quem está falando sem olhar.">Each NPC speaks under its own name and in its own voice. You can tell who is talking without looking.</p>
+              </li>
+              <li class="feat" data-reveal style="--d: 3">
+                <span class="hex hex--violet"><svg class="ico" aria-hidden="true"><use href="#i-eye-off" /></svg></span>
+                <h3 data-pt="Sussurros e segredos">Whispers and secrets</h3>
+                <p data-pt="O mestre fala em particular com um jogador, rola em segredo e mostra a cada um só o que o personagem sabe.">The GM talks to one player in private, rolls in secret and shows each person only what their character knows.</p>
+              </li>
+              <li class="feat" data-reveal style="--d: 4">
+                <span class="hex hex--cyan"><svg class="ico" aria-hidden="true"><use href="#i-graduation-cap" /></svg></span>
+                <h3 data-pt="Ensina enquanto você joga">It teaches as you play</h3>
+                <p data-pt="Sem lição de casa. Cada regra é explicada no momento em que a história precisa dela pela primeira vez.">No homework. Each rule is explained the first time the story needs it.</p>
+              </li>
+              <li class="feat" data-reveal style="--d: 5">
+                <span class="hex hex--magenta"><svg class="ico" aria-hidden="true"><use href="#i-mic" /></svg></span>
+                <h3 data-pt="Fale em vez de digitar">Talk instead of typing</h3>
+                <p data-pt="Aperte o microfone, no Chrome ou no Edge, e diga o que o seu personagem faz. A fala é transcrita e vai para a mesa.">Hit the mic, in Chrome or Edge, and say what your character does. Your speech is transcribed and sent to the table.</p>
+              </li>
+              <li class="feat" data-reveal style="--d: 6">
+                <span class="hex"><svg class="ico" aria-hidden="true"><use href="#i-orbit" /></svg></span>
+                <h3 data-pt="Um mundo que não para">A world that keeps moving</h3>
+                <p data-pt="Sem trilhos e sem final combinado. Os antagonistas agem pela própria lógica e o mundo responde às escolhas da mesa.">No rails and no scripted ending. The opposition acts on its own logic and the world responds to the table's choices.</p>
+              </li>
+            </ul>
+          </div>
+
+          <div class="block">
+            <header class="sec__head" data-reveal>
+              <p class="kicker" data-pt="Memória">Memory</p>
+              <h3 class="h3" data-pt-html="A campanha continua <em>exatamente</em> de onde parou.">The campaign picks up <em>exactly</em> where it left off.</h3>
+              <p class="lead" data-pt="Três camadas de memória mantêm a história coerente por semanas ou meses de jogo.">Three layers of memory keep the story consistent across weeks or months of play.</p>
+            </header>
+            <div class="mems">
+              <article class="mem cut" data-reveal style="--tone: var(--yellow)">
+                <p class="mem__layer">
+                  <svg class="ico" aria-hidden="true"><use href="#i-book-text" /></svg><span data-pt="Camada 1">Layer 1</span>
+                </p>
+                <h4 data-pt="Crônica">Chronicle</h4>
+                <p data-pt="O que importa, anotado pelo próprio mestre: decisões, dívidas, promessas e quem fez o quê.">What matters, written down by the GM itself: decisions, debts, promises and who did what.</p>
+              </article>
+              <article class="mem cut" data-reveal style="--tone: var(--cyan); --d: 1">
+                <p class="mem__layer">
+                  <svg class="ico" aria-hidden="true"><use href="#i-scroll-text" /></svg><span data-pt="Camada 2">Layer 2</span>
+                </p>
+                <h4 data-pt="Diário de sessão">Session diary</h4>
+                <p data-pt="Tudo o que foi dito e rolado, guardado automaticamente e pesquisável depois.">Everything that was said and rolled, saved automatically and searchable later.</p>
+              </article>
+              <article class="mem cut" data-reveal style="--tone: var(--magenta); --d: 2">
+                <p class="mem__layer">
+                  <svg class="ico" aria-hidden="true"><use href="#i-brain" /></svg><span data-pt="Camada 3">Layer 3</span>
+                </p>
+                <h4 data-pt="Memória de longo prazo">Long-term memory</h4>
+                <p data-pt="Um índice das sessões passadas, que o mestre confere com a crônica antes de narrar.">An index of past sessions, which the GM checks against the chronicle before it narrates.</p>
+              </article>
+            </div>
+            <div class="timeline cut cut--ghost" aria-hidden="true" data-reveal>
+              <div class="timeline__rail">
+                <svg class="timeline__arc" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 100 C 20 -20, 80 -20, 100 100" /></svg>
+                <span class="node">S01</span><span class="node">S02</span><span class="node is-key">S03</span><span class="node">S04</span><span class="node">S05</span><span class="node">S06</span><span class="node">S07</span><span class="node">S08</span
+                ><span class="node">S09</span><span class="node">S10</span><span class="node is-key">S11</span><span class="node">S12</span>
+              </div>
+              <p class="timeline__quote"><b data-pt="Sessão 11">Session 11</b><br /><span data-pt="Celeste cobra o favor que a equipe prometeu lá na sessão 3.">Celeste calls in the favor the crew promised her back in session 3.</span></p>
+            </div>
+          </div>
+
+          <div class="block split split--wide-left">
+            <div data-reveal>
+              <p class="kicker" data-pt="Grupo dividido">Split party</p>
+              <h3 class="h3" data-pt-html="O grupo se separou? Cada cena ganha o <em>próprio mestre.</em>">The party split up? Each scene gets <em>its own Game Master.</em></h3>
+              <p class="lead" data-pt="Quando a mesa se divide, agentes de IA assumem em paralelo. Cada frente joga no próprio ritmo, ao mesmo tempo, e devolve um resumo ao mestre principal quando a cena acaba.">
+                When the table splits, parallel AI agents take over. Each group plays at its own pace, at the same time, and its GM hands a summary back to the main GM when the scene ends.
+              </p>
+              <ul class="ticks">
+                <li data-pt="Um mestre para cada frente">One GM for each group</li>
+                <li data-pt="Um mestre só para quem entrou na rede">One GM just for whoever is inside the network</li>
+                <li data-pt="No dia livre, um mestre por jogador">On a day off, one GM per player</li>
+              </ul>
+            </div>
+            <svg class="fork" viewBox="0 0 520 340" aria-hidden="true" data-reveal style="--d: 1">
+              <g style="--tone: var(--yellow)">
+                <rect class="fork__box" x="10" y="140" width="112" height="60" />
+                <circle class="fork__pulse" cx="26" cy="158" r="4" />
+                <text x="38" y="162" data-pt="Mestre">Main GM</text>
+                <text class="fork__sub" x="22" y="184" data-pt="principal">runs the table</text>
+              </g>
+              <g style="--tone: var(--cyan)">
+                <path class="fork__flow" d="M122 158 C 160 158, 150 56, 196 56" />
+                <rect class="fork__lane" x="196" y="22" width="206" height="72" />
+                <circle class="fork__pulse" cx="214" cy="44" r="4" />
+                <text x="226" y="48" data-pt="Frente A · a rua">Group A · the street</text>
+                <circle class="fork__tok" cx="222" cy="72" r="8" style="--tone: var(--cyan)" />
+                <circle class="fork__tok" cx="246" cy="72" r="8" style="--tone: var(--orange)" />
+                <text class="fork__sub" x="264" y="76" data-pt="mestre próprio">its own GM</text>
+                <path class="fork__flow" d="M402 56 C 446 56, 438 150, 470 158" />
+              </g>
+              <g style="--tone: var(--magenta)">
+                <path class="fork__flow" d="M122 170 L 196 170" />
+                <rect class="fork__lane" x="196" y="134" width="206" height="72" />
+                <circle class="fork__pulse" cx="214" cy="156" r="4" style="animation-delay: -0.6s" />
+                <text x="226" y="160" data-pt="Frente B · os fundos">Group B · the back room</text>
+                <circle class="fork__tok" cx="222" cy="184" r="8" style="--tone: var(--violet)" />
+                <text class="fork__sub" x="240" y="188" data-pt="mestre próprio">its own GM</text>
+                <path class="fork__flow" d="M402 170 L 470 170" />
+              </g>
+              <g style="--tone: var(--green)">
+                <path class="fork__flow" d="M122 182 C 160 182, 150 284, 196 284" />
+                <rect class="fork__lane" x="196" y="246" width="206" height="72" />
+                <circle class="fork__pulse" cx="214" cy="268" r="4" style="animation-delay: -1.2s" />
+                <text x="226" y="272" data-pt="A rede · invasão">The network · the hack</text>
+                <circle class="fork__tok" cx="222" cy="296" r="8" style="--tone: var(--green)" />
+                <text class="fork__sub" x="240" y="300" data-pt="mestre próprio">its own GM</text>
+                <path class="fork__flow" d="M402 284 C 446 284, 438 190, 470 182" />
+              </g>
+              <g style="--tone: var(--yellow)">
+                <polygon class="fork__box" points="470,146 510,170 470,194" />
+                <text class="fork__sub" x="420" y="226" data-pt="resumo de volta">summary back</text>
+              </g>
+            </svg>
+          </div>
+        </div>
+      </section>
+
+      <section class="sec" id="table">
+        <span class="sec__no" aria-hidden="true">02</span>
+        <div class="wrap">
+          <header class="sec__head" data-reveal>
+            <p class="kicker" data-pt="02 · A mesa">02 · The table</p>
+            <h2 class="h2" data-pt-html="Mapa, fichas, dados e chat <em>numa tela só.</em>">Map, sheets, dice and chat <em>on a single screen.</em></h2>
+            <p class="lead" data-pt="Um mapa 3D no centro, até seis fichas em volta e tudo o que a sessão precisa ao alcance. Os jogadores não instalam nada: é abrir o link e sentar.">
+              A 3D map in the middle, up to six character sheets around it and everything the session needs within reach. Players install nothing: open the link and sit down.
+            </p>
+          </header>
+
+          <div class="mock-zone" aria-hidden="true" data-reveal>
+            <div class="mock cut">
+              <div class="mock__ui">
+                <div class="m-top">
+                  <span class="m-top__brand">RPG<b>ed</b></span>
+                  <span class="m-top__camp" data-pt="Campanha · Fora de Hora">Campaign · After Hours</span>
+                  <span class="m-clock"><span data-pt="Dia">Day</span><b>03</b><em data-pt="Noite">Night</em><span data-pt="Sessão 4 · Cap. 2">Session 4 · Ch. 2</span></span>
+                  <span class="m-top__btns">
+                    <i><svg class="ico"><use href="#i-volume-2" /></svg></i><i><svg class="ico"><use href="#i-music" /></svg></i><i><svg class="ico"><use href="#i-dices" /></svg></i>
+                  </span>
+                </div>
+                <div class="m-col">
+                  <div class="m-card" style="--pc: var(--cyan)">
+                    <span class="m-card__you" data-pt="VOCÊ">YOU</span>
+                    <div class="m-card__head">
+                      <span class="face" data-face="Nara" data-color="#1ef2ff" data-hair="1"></span>
+                      <div>
+                        <div class="m-card__name">Nara</div>
+                        <div class="m-card__role" data-pt="Infiltradora · 4">Infiltrator · 4</div>
+                      </div>
+                    </div>
+                    <div class="m-row"><span data-pt="PV">HP</span><span class="meter" style="--v: 100%"></span><span class="mono">40/40</span></div>
+                    <div class="m-row">
+                      <span data-pt="DEF">DEF</span><span class="mono" style="margin-left: 0">11</span><span data-pt="Sorte" style="margin-left: auto">Luck</span><span class="pips"><i></i><i></i><i></i><i></i><i class="is-spent"></i><i class="is-spent"></i></span>
+                    </div>
+                    <span class="chip chip--ok" data-pt="Intacta">Unhurt</span>
+                  </div>
+                  <div class="m-card" style="--pc: var(--orange)">
+                    <div class="m-card__head">
+                      <span class="face" data-face="Theo" data-color="#ff8a3d" data-hair="2"></span>
+                      <div>
+                        <div class="m-card__name">Theo</div>
+                        <div class="m-card__role" data-pt="Atirador · 5">Gunner · 5</div>
+                      </div>
+                    </div>
+                    <div class="m-row"><span data-pt="PV">HP</span><span class="meter" style="--v: 55%; --tone: var(--yellow)"></span><span class="mono">22/40</span></div>
+                    <div class="m-row"><span data-pt="DEF">DEF</span><span class="mono" style="margin-left: 0">13</span></div>
+                    <span class="chip chip--yellow" data-pt="Ferido leve">Hurt</span>
+                  </div>
+                  <div class="m-card" style="--pc: var(--violet)">
+                    <div class="m-card__head">
+                      <span class="face" data-face="Ravi" data-color="#a06bff" data-hair="6"></span>
+                      <div>
+                        <div class="m-card__name">Ravi</div>
+                        <div class="m-card__role" data-pt="Técnico · 3">Technician · 3</div>
+                      </div>
+                    </div>
+                    <div class="m-row"><span data-pt="PV">HP</span><span class="meter" style="--v: 100%"></span><span class="mono">35/35</span></div>
+                    <div class="m-row"><span data-pt="DEF">DEF</span><span class="mono" style="margin-left: 0">7</span></div>
+                    <span class="chip chip--ok" data-pt="Intacto">Unhurt</span>
+                  </div>
+                </div>
+                <div class="m-map">
+                  <img src="assets/img/table-map.webp" alt="" width="1280" height="900" loading="lazy" decoding="async" />
+                  <div class="m-place"><small data-pt="Local">Location</small><b data-pt="Fliperama · Rua dos Fundos">The Arcade · Back Street</b></div>
+                  <div class="m-init">
+                    <span class="m-init__round"><span data-pt="Rodada">Round</span><b>1</b></span>
+                    <span class="m-timer">1:53</span>
+                    <span class="m-turn is-turn" style="--pc: var(--orange)"><span class="face" data-face="Theo" data-color="#ff8a3d" data-hair="2"></span>Theo <b>24</b></span>
+                    <span class="m-turn" style="--pc: var(--cyan)"><span class="face" data-face="Nara" data-color="#1ef2ff" data-hair="1"></span>Nara <b>21</b></span>
+                    <span class="m-turn" style="--pc: var(--red)"><span class="face" data-face="Guard A" data-color="#ff1f3d" data-hair="4"></span><span data-pt="Segurança">Guard</span> <b>17</b></span>
+                    <span class="m-turn" style="--pc: var(--green)"><span class="face" data-face="Juno" data-color="#3dff9a" data-hair="8"></span>Juno <b>15</b></span>
+                    <span class="m-turn" style="--pc: var(--violet)"><span class="face" data-face="Ravi" data-color="#a06bff" data-hair="6"></span>Ravi <b>12</b></span>
+                  </div>
+                  <div class="m-cap"><small data-pt="Narrador">Narrator</small><p data-pt="O segundo segurança larga a arma e levanta as mãos.">The second guard drops his gun and raises his hands.</p></div>
+                  <div class="m-ask" data-pt="Role Percepção · dificuldade 15">Roll Perception · difficulty 15</div>
+                  <div class="m-dock"><span class="is-on">d10</span><span>d6</span><span>2d6</span><span>3d6</span><span>4d6</span><span data-pt="perícia">skill</span></div>
+                  <div class="m-chat">
+                    <div class="m-chat__bar">
+                      <svg class="ico"><use href="#i-message-square" /></svg><span data-pt="Log e chat">Log &amp; chat</span>
+                    </div>
+                    <div class="m-chat__list">
+                      <div class="m-msg" style="--pc: var(--orange)"><small>Theo</small><p data-pt="Chuto a porta e atiro no da esquerda.">I kick the door in and shoot the one on the left.</p></div>
+                      <div class="m-msg m-msg--roll"><b>28</b><span data-pt="Ataque · 10 + 6 + 12 · crítico">Attack · 10 + 6 + 12 · critical</span></div>
+                      <div class="m-msg m-msg--narr"><small data-pt="Narrador">Narrator</small><p data-pt="O primeiro cai antes de sacar.">The first one drops before he can draw.</p></div>
+                      <div class="m-msg" style="--pc: var(--green)"><small>Juno</small><p data-pt="Segura ele. Eu faço as perguntas.">Hold him. I'll ask the questions.</p></div>
+                    </div>
+                    <div class="m-chat__input">
+                      <svg class="ico"><use href="#i-mic" /></svg><span data-pt="mensagem · /r 2d6 · /w segredo">message · /r 2d6 · /w secret</span><svg class="ico"><use href="#i-send" /></svg>
+                    </div>
+                  </div>
+                </div>
+                <div class="m-col">
+                  <div class="m-card" style="--pc: var(--green)">
+                    <div class="m-card__head">
+                      <span class="face" data-face="Juno" data-color="#3dff9a" data-hair="8"></span>
+                      <div>
+                        <div class="m-card__name">Juno</div>
+                        <div class="m-card__role" data-pt="Médica · 4">Medic · 4</div>
+                      </div>
+                    </div>
+                    <div class="m-row"><span data-pt="PV">HP</span><span class="meter" style="--v: 100%"></span><span class="mono">30/30</span></div>
+                    <div class="m-row"><span data-pt="DEF">DEF</span><span class="mono" style="margin-left: 0">7</span></div>
+                    <span class="chip chip--ok" data-pt="Intacta">Unhurt</span>
+                  </div>
+                  <div class="m-card m-card--empty"><span>05</span><span data-pt="cadeira vaga">open seat</span></div>
+                  <div class="m-card m-card--empty"><span>06</span><span data-pt="cadeira vaga">open seat</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="phone cut">
+              <div class="phone__ui">
+                <div class="p-top"><span data-pt="Dia">Day</span><b>03</b><em data-pt="Noite">Night</em></div>
+                <div class="p-turn">
+                  <span class="m-timer">1:53</span>
+                  <span class="face is-turn" data-face="Theo" data-color="#ff8a3d" data-hair="2"></span><span class="face" data-face="Nara" data-color="#1ef2ff" data-hair="1"></span><span class="face" data-face="Guard A" data-color="#ff1f3d" data-hair="4"></span
+                  ><span class="face" data-face="Juno" data-color="#3dff9a" data-hair="8"></span>
+                </div>
+                <div class="p-map"><img src="assets/img/table-map.webp" alt="" width="1280" height="900" loading="lazy" decoding="async" /></div>
+                <div>
+                  <div class="p-ask" data-pt="Role Percepção · dificuldade 15">Roll Perception · difficulty 15</div>
+                  <div class="p-chat">
+                    <div class="m-msg m-msg--narr"><small data-pt="Narrador">Narrator</small><p data-pt="O primeiro cai antes de sacar.">The first one drops before he can draw.</p></div>
+                  </div>
+                </div>
+                <div class="p-tabs">
+                  <span class="is-on"><svg class="ico"><use href="#i-users" /></svg><span data-pt="Ficha">Sheet</span></span><span><svg class="ico"><use href="#i-smartphone" /></svg><span data-pt="Celular">Phone</span></span
+                  ><span><svg class="ico"><use href="#i-dices" /></svg><span data-pt="Dados">Dice</span></span><span><svg class="ico"><use href="#i-shield-check" /></svg><span data-pt="Equipe">Crew</span></span
+                  ><span><svg class="ico"><use href="#i-layout-grid" /></svg><span data-pt="Mais">More</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <ul class="notes">
+            <li class="note" data-reveal>
+              <h3 data-pt="Fichas que fazem a conta">Sheets that do the math</h3>
+              <p data-pt="Pontos de vida, armadura, ferimentos e penalidades se atualizam sozinhos.">Hit points, armor, wounds and penalties update by themselves.</p>
+            </li>
+            <li class="note" data-reveal style="--d: 1">
+              <h3 data-pt="Iniciativa na tela">Initiative on screen</h3>
+              <p data-pt="A ordem dos turnos fica no topo do mapa, com o relógio de quem está na vez.">Turn order sits at the top of the map, with a clock for whoever is up.</p>
+            </li>
+            <li class="note" data-reveal style="--d: 2">
+              <h3 data-pt="Um log para tudo">One log for everything</h3>
+              <p data-pt="Narração, chat, sussurros e rolagens por texto, como /r 2d6+1.">Narration, chat, whispers and rolls typed as text, like /r 2d6+1.</p>
+            </li>
+            <li class="note" data-reveal style="--d: 3">
+              <h3 data-pt="No celular, vira aplicativo">On a phone, it turns into an app</h3>
+              <p data-pt="Mapa em cima, chat embaixo e uma barra com Ficha, Celular, Dados, Equipe e Mais.">Map on top, chat below and a bar with Sheet, Phone, Dice, Crew and More.</p>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="sec" id="mechanics">
+        <span class="sec__no" aria-hidden="true">03</span>
+        <div class="wrap">
+          <header class="sec__head" data-reveal>
+            <p class="kicker" data-pt="03 · Mecânicas">03 · Mechanics</p>
+            <h2 class="h2" data-pt-html="As regras rodam sozinhas. <em>Você só joga.</em>">The rules run themselves. <em>You just play.</em></h2>
+            <p class="lead" data-pt="Toda rolagem acontece no servidor e toda regra vale do mesmo jeito para todo mundo. Sem discussão sobre conta, sem dado roubado.">
+              Every roll happens on the server and every rule applies the same way to everyone. No arguing over the math, no fudged dice.
+            </p>
+          </header>
+
+          <div class="bento">
+            <article class="tile tile--7 tile--cyan cut" data-reveal>
+              <p class="tile__tag">
+                <svg class="ico" aria-hidden="true"><use href="#i-dices" /></svg><span data-pt="Experimente">Try it</span>
+              </p>
+              <h3 data-pt="Dados 3D que não mentem">3D dice that can't lie</h3>
+              <p data-pt="Cada rolagem joga poliedros de verdade, com física. O número é sorteado no servidor antes de o dado sair da mão, e o dado sempre cai com esse número para cima.">
+                Every roll throws real polyhedral dice, with physics. The number is drawn on the server before the die leaves your hand, and the face that lands up is always that number.
+              </p>
+              <div class="tile__demo" id="dice">
+                <div class="tray" id="tray">
+                  <canvas id="dice-canvas" aria-hidden="true"></canvas>
+                  <div class="tray__idle" id="tray-idle" data-pt="Escolha um dado e role">Pick a die and roll</div>
+                  <div class="tray__seal" aria-hidden="true">
+                    <svg class="ico"><use href="#i-lock" /></svg><span data-pt="servidor">server</span><b id="tray-seal">--</b>
+                  </div>
+                  <div class="tray__out" id="tray-out" role="status" aria-live="polite" aria-atomic="true"><b id="tray-total"></b><span id="tray-math"></span><em id="tray-verdict"></em></div>
+                </div>
+                <div class="dicebar">
+                  <div class="dicebar__set" role="group" aria-label="Die" data-i18n-attr="aria-label" data-pt-aria-label="Dado">
+                    <button class="pick" type="button" data-die="d4" aria-pressed="false">d4</button>
+                    <button class="pick" type="button" data-die="d6" aria-pressed="false">d6</button>
+                    <button class="pick" type="button" data-die="d8" aria-pressed="false">d8</button>
+                    <button class="pick" type="button" data-die="d10" aria-pressed="true">d10</button>
+                    <button class="pick" type="button" data-die="d12" aria-pressed="false">d12</button>
+                    <button class="pick" type="button" data-die="d20" aria-pressed="false">d20</button>
+                    <button class="pick" type="button" data-die="d100" aria-pressed="false">d100</button>
+                  </div>
+                  <span class="dicebar__sep" aria-hidden="true"></span>
+                  <div class="dicebar__set" role="group" aria-label="Roll type" data-i18n-attr="aria-label" data-pt-aria-label="Tipo de rolagem">
+                    <button class="pick" type="button" data-kind="check" aria-pressed="true" data-pt="Teste">Check</button>
+                    <button class="pick" type="button" data-kind="damage" aria-pressed="false" data-pt="Dano">Damage</button>
+                  </div>
+                  <button class="btn btn--cyan btn--sm" type="button" id="dice-roll">
+                    <svg class="ico" aria-hidden="true"><use href="#i-dices" /></svg><span data-pt="Rolar">Roll</span>
+                  </button>
+                </div>
+                <ul class="legend">
+                  <li style="--tone: var(--cyan)" data-pt="teste">check</li>
+                  <li style="--tone: var(--magenta)" data-pt="dano">damage</li>
+                  <li style="--tone: var(--yellow)" data-pt="crítico: o 10 explode e soma outro dado">critical: a 10 explodes and adds another die</li>
+                  <li style="--tone: var(--red)" data-pt="falha crítica: o 1 rola outro dado e subtrai">fumble: a 1 rolls another die and subtracts it</li>
+                </ul>
+              </div>
+            </article>
+
+            <article class="tile tile--5 tile--orange cut" data-reveal style="--d: 1">
+              <p class="tile__tag">
+                <svg class="ico" aria-hidden="true"><use href="#i-crosshair" /></svg><span data-pt="Experimente">Try it</span>
+              </p>
+              <h3 data-pt="Linha de visão e cobertura">Line of sight and cover</h3>
+              <p data-pt="Paredes, portas fechadas e tudo o que para bala bloqueiam a linha de visão. Vidro comum e grade, não. O servidor recusa o tiro em quem está atrás de cobertura, e a cobertura tem pontos de vida: dá para destruir.">
+                Walls, closed doors and anything that stops a bullet block line of sight. Ordinary glass and fences don't. The server rejects any shot at a target behind cover, and cover has hit points: you can shoot it to pieces.
+              </p>
+              <div class="tile__demo">
+                <div class="los" id="los"></div>
+                <div class="los__bar">
+                  <span class="los__status" id="los-status" role="status" aria-live="polite"></span>
+                  <button class="btn btn--sm" type="button" id="los-fire">
+                    <svg class="ico" aria-hidden="true"><use href="#i-crosshair" /></svg><span data-pt="Atirar">Fire</span>
+                  </button>
+                  <button class="btn btn--ghost btn--sm" type="button" id="los-reset" aria-label="Reset" data-i18n-attr="aria-label" data-pt-aria-label="Recomeçar"><svg class="ico" aria-hidden="true"><use href="#i-refresh-cw" /></svg></button>
+                </div>
+                <p class="los__hint" data-pt="Mova o alvo vermelho: arraste, toque numa casa ou use as setas. Clique na porta, ou aperte Enter, para abrir ou fechar.">Move the red target: drag, tap a square or use the arrow keys. Click the door, or press Enter, to open or close it.</p>
+              </div>
+            </article>
+
+            <article class="tile tile--violet cut" data-reveal>
+              <p class="tile__tag">
+                <svg class="ico" aria-hidden="true"><use href="#i-cloud-fog" /></svg><span data-pt="Mapa">Map</span>
+              </p>
+              <h3 data-pt="Névoa de guerra">Fog of war</h3>
+              <p data-pt="O mapa se revela ao redor dos personagens conforme eles andam. O que ainda está sob a névoa nem chega à sua tela.">The map reveals itself around the characters as they move. What is still under the fog never reaches your screen.</p>
+              <div class="tile__demo">
+                <div class="fogbox"><canvas id="fog-canvas" aria-hidden="true"></canvas></div>
+              </div>
+            </article>
+
+            <article class="tile tile--yellow cut" data-reveal style="--d: 1">
+              <p class="tile__tag">
+                <svg class="ico" aria-hidden="true"><use href="#i-timer" /></svg><span data-pt="Combate">Combat</span>
+              </p>
+              <h3 data-pt="Relógio em cada turno">A clock on every turn</h3>
+              <p data-pt="Dois minutos para agir. O relógio recomeça a cada coisa que você faz; parou, a vez passa.">Two minutes to act. The clock restarts with each thing you do; sit still and the turn moves on.</p>
+              <div class="tile__demo">
+                <div class="turn" id="turn" aria-hidden="true">
+                  <div class="ring" id="turn-ring"><span id="turn-time">2:00</span></div>
+                  <ol class="queue" id="turn-queue">
+                    <li class="is-turn" style="--pc: var(--orange)"><span class="face" data-face="Theo" data-color="#ff8a3d" data-hair="2"></span>Theo <b>24</b></li>
+                    <li style="--pc: var(--cyan)"><span class="face" data-face="Nara" data-color="#1ef2ff" data-hair="1"></span>Nara <b>21</b></li>
+                    <li style="--pc: var(--red)"><span class="face" data-face="Guard A" data-color="#ff1f3d" data-hair="4"></span><span data-pt="Segurança">Guard</span> <b>17</b></li>
+                  </ol>
+                </div>
+              </div>
+            </article>
+
+            <article class="tile tile--green cut" data-reveal style="--d: 2">
+              <p class="tile__tag">
+                <svg class="ico" aria-hidden="true"><use href="#i-book-text" /></svg><span data-pt="Ritmo">Pacing</span>
+              </p>
+              <h3 data-pt="Capítulos e voto da mesa">Chapters and a table vote</h3>
+              <p data-pt="A sessão anda em capítulos curtos. No fim de cada um a mesa vota: continuar ou parar por hoje.">Sessions run in short chapters. At the end of each one the table votes: keep playing or stop for today.</p>
+              <div class="tile__demo">
+                <div class="vote" id="vote" aria-hidden="true">
+                  <div class="vote__row">
+                    <span class="voter" style="--pc: var(--cyan)">Nara <span data-go="1"></span></span><span class="voter" style="--pc: var(--orange)">Theo <span data-go="1"></span></span><span class="voter" style="--pc: var(--violet)">Ravi <span data-go="1"></span></span
+                    ><span class="voter" style="--pc: var(--green)">Juno <span data-go="0"></span></span>
+                  </div>
+                  <div class="vote__bar"><i></i><i></i></div>
+                  <p class="vote__out" id="vote-out"></p>
+                </div>
+              </div>
+            </article>
+
+            <article class="tile tile--7 tile--magenta cut" data-reveal>
+              <p class="tile__tag">
+                <svg class="ico" aria-hidden="true"><use href="#i-music" /></svg><span data-pt="12 ocasiões">12 moods</span>
+              </p>
+              <h3 data-pt="Trilha que acompanha a cena">A soundtrack that follows the scene</h3>
+              <p data-pt="O mestre escolhe a ocasião e todos ouvem a mesma faixa no mesmo ponto. Quando o combate começa, a música de luta entra sozinha, e a trilha abaixa sempre que o narrador fala.">
+                The GM picks the mood and everyone hears the same track at the same point. When a fight breaks out, the combat music kicks in on its own, and the soundtrack ducks whenever the narrator speaks.
+              </p>
+              <div class="tile__demo tile__demo--fill" id="sound">
+                <div class="scenes" role="group" aria-label="Mood" data-i18n-attr="aria-label" data-pt-aria-label="Ocasião">
+                  <button class="scene" type="button" data-bpm="72" data-tone="#3dff9a" aria-pressed="false" data-pt="Calmaria">Calm</button>
+                  <button class="scene" type="button" data-bpm="96" data-tone="#1ef2ff" aria-pressed="true" data-pt="Rua">Street</button>
+                  <button class="scene" type="button" data-bpm="110" data-tone="#a06bff" aria-pressed="false" data-pt="Tensão">Tension</button>
+                  <button class="scene" type="button" data-bpm="128" data-tone="#ff2bd6" aria-pressed="false" data-pt="Boate">Club</button>
+                  <button class="scene" type="button" data-bpm="150" data-tone="#ff8a3d" aria-pressed="false" data-pt="Perseguição">Chase</button>
+                  <button class="scene" type="button" data-bpm="140" data-tone="#ff1f3d" aria-pressed="false" data-pt="Luta">Fight</button>
+                  <button class="scene" type="button" data-bpm="168" data-tone="#fcee0a" aria-pressed="false" data-pt="Chefão">Boss fight</button>
+                </div>
+                <div class="deck" id="deck" aria-hidden="true">
+                  <div class="deck__bars" id="deck-bars"></div>
+                  <div class="deck__meta">
+                    <b id="deck-name" data-pt="Rua">Street</b><span><span id="deck-bpm">96</span> bpm</span><span class="deck__sync"><i></i><span data-pt="todos em sincronia">everyone in sync</span></span>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="tile tile--5 tile--cyan cut" data-reveal style="--d: 1">
+              <p class="tile__tag">
+                <svg class="ico" aria-hidden="true"><use href="#i-smartphone" /></svg><span data-pt="Na ficha">On the sheet</span>
+              </p>
+              <h3 data-pt="Seu personagem tem um celular">Your character has a phone</h3>
+              <p data-pt="Mensagens com a equipe e com contatos, ligações que tocam na sua tela, agenda e notas que se escrevem sozinhas.">Messages with the crew and with contacts, calls that ring on your screen, a calendar and notes that write themselves.</p>
+              <div class="tile__demo">
+                <div class="cell cut" id="cell" aria-hidden="true">
+                  <div class="cell__bar"><span>22:41</span><span data-pt="Dia 03 · Noite">Day 03 · Night</span></div>
+                  <div class="cell__who">
+                    <span class="cell__avatar">C</span>
+                    <span><b>Celeste</b><small data-pt="contato · informante">contact · informant</small></span>
+                  </div>
+                  <div class="cell__thread">
+                    <p class="bubble" data-pt="O fliperama fecha às duas. A luz dos fundos nunca apaga.">The arcade closes at two. The light in the back never goes off.</p>
+                    <p class="bubble bubble--me" data-pt="Quantos lá dentro?">How many inside?</p>
+                    <p class="bubble" data-pt="Dois. E uma maleta que não é deles.">Two. And a briefcase that isn't theirs.</p>
+                  </div>
+                  <div class="call">
+                    <div class="call__label">
+                      <svg class="ico"><use href="#i-phone-incoming" /></svg><span data-pt="Ligação recebida · 26 s">Incoming call · 26 s</span>
+                    </div>
+                    <div class="call__btns">
+                      <span><svg class="ico"><use href="#i-phone" /></svg><span data-pt="Atender">Answer</span></span><span><svg class="ico"><use href="#i-phone-off" /></svg><span data-pt="Recusar">Decline</span></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="tile tile--3 cut" data-reveal>
+              <p class="tile__tag">
+                <svg class="ico" aria-hidden="true"><use href="#i-heart-pulse" /></svg><span data-pt="Combate">Combat</span>
+              </p>
+              <h3 data-pt="Dano com consequência">Damage with consequences</h3>
+              <p data-pt="Armadura que se desgasta, ferimentos críticos, testes contra a morte e estabilização, tudo calculado na hora em que o golpe entra.">Armor that wears down, critical injuries, death saves and stabilization, all worked out the moment the hit lands.</p>
+            </article>
+            <article class="tile tile--3 tile--yellow cut" data-reveal style="--d: 1">
+              <p class="tile__tag">
+                <svg class="ico" aria-hidden="true"><use href="#i-car" /></svg><span data-pt="18 veículos">18 vehicles</span>
+              </p>
+              <h3 data-pt="Da moto ao dirigível">From motorbikes to airships</h3>
+              <p data-pt="Cada veículo tem modelo 3D próprio, assentos, faróis e manobras. Sim, dá para jogar o carro em cima.">Every vehicle has its own 3D model, seats, headlights and maneuvers. Yes, you can ram.</p>
+            </article>
+            <article class="tile tile--3 tile--green cut" data-reveal style="--d: 2">
+              <p class="tile__tag">
+                <svg class="ico" aria-hidden="true"><use href="#i-network" /></svg><span data-pt="Invasão">Hacking</span>
+              </p>
+              <h3 data-pt="Entre na rede">Get inside the network</h3>
+              <p data-pt="Um sistema em andares, vigiado e trancado, revelado um andar por vez. Quem entra ganha um mestre só para si.">A system laid out in floors, guarded and locked, revealed one floor at a time. Whoever goes in gets a GM of their own.</p>
+            </article>
+            <article class="tile tile--3 tile--orange cut" data-reveal style="--d: 3">
+              <p class="tile__tag">
+                <svg class="ico" aria-hidden="true"><use href="#i-coffee" /></svg><span data-pt="Entre missões">Downtime</span>
+              </p>
+              <h3 data-pt="Dias livres">Days off</h3>
+              <p data-pt="No dia livre, cada personagem ganha um canto do mapa e uma cena particular com o mestre. Mostre para a equipe se quiser.">On a day off each character gets a corner of the map and a private scene with the GM. Share it with the crew if you feel like it.</p>
+            </article>
+
+            <article class="tile tile--12 tile--violet cut" data-reveal>
+              <div class="peek">
+                <div>
+                  <p class="tile__tag">
+                    <svg class="ico" aria-hidden="true"><use href="#i-shield-check" /></svg><span data-pt="Privacidade na mesa">Table privacy</span>
+                  </p>
+                  <h3 data-pt="Só o que você pode ver">Only what you can see</h3>
+                  <p data-pt="O servidor manda para cada jogador só o que ele pode ver. O que o mestre esconde das fichas dos outros, as rolagens secretas e os NPCs fora de vista nem chegam ao seu navegador.">
+                    The server sends each player only what they are allowed to see. Whatever the GM hides on other people's sheets, secret rolls and unseen NPCs never reach your browser.
+                  </p>
+                </div>
+                <div class="views">
+                  <div class="view">
+                    <div class="view__who">
+                      <svg class="ico"><use href="#i-feather" /></svg><span data-pt="O mestre vê">The GM sees</span>
+                    </div>
+                    <p data-pt-html="Segurança A · <b>12/35 PV</b> · ferido grave">Guard A · <b>12/35 HP</b> · badly hurt</p>
+                    <p data-pt-html="Rolagem secreta · Percepção <b>17</b>">Secret roll · Perception <b>17</b></p>
+                    <p data-pt-html="Celeste <b>mente</b> sobre a maleta">Celeste is <b>lying</b> about the briefcase</p>
+                  </div>
+                  <div class="view view--player">
+                    <div class="view__who">
+                      <svg class="ico"><use href="#i-users" /></svg><span data-pt="Você vê">You see</span>
+                    </div>
+                    <p data-pt="Segurança A sofreu dano no corpo.">Guard A took damage to the body.</p>
+                    <p><span class="redact" aria-hidden="true">secret roll perception</span><span class="sr" data-pt="oculto">hidden</span></p>
+                    <p><span class="redact" aria-hidden="true">celeste and the case</span><span class="sr" data-pt="oculto">hidden</span></p>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="sec" id="maps">
+        <span class="sec__no" aria-hidden="true">04</span>
+        <div class="wrap">
+          <div class="split split--wide-left">
+            <div>
+              <header data-reveal>
+                <p class="kicker" data-pt="04 · Mapas">04 · Maps</p>
+                <h2 class="h2" data-pt-html="Desenhe um retângulo. <em>Ganhe uma sala pronta.</em>">Draw a rectangle. <em>Get a finished room.</em></h2>
+                <p class="lead" data-pt="A sala mágica ergue paredes, portas, móveis e luzes no tema que você escolher. Não gostou? Peça outra versão.">
+                  The magic room raises walls, doors, furniture and lights to match the theme you pick. Don't like it? Ask for another version.
+                </p>
+              </header>
+              <div class="themes" data-reveal>
+                <div class="themes__set" id="themes" role="group" aria-label="Room theme" data-i18n-attr="aria-label" data-pt-aria-label="Tema da sala">
+                <button class="scene" type="button" data-theme="bar" aria-pressed="true">Bar</button>
+                <button class="scene" type="button" data-theme="club" aria-pressed="false" data-pt="Boate">Club</button>
+                <button class="scene" type="button" data-theme="clinic" aria-pressed="false" data-pt="Clínica">Clinic</button>
+                <button class="scene" type="button" data-theme="warehouse" aria-pressed="false" data-pt="Armazém">Warehouse</button>
+                <button class="scene" type="button" data-theme="office" aria-pressed="false" data-pt="Escritório">Office</button>
+                <button class="scene" type="button" data-theme="garage" aria-pressed="false" data-pt="Garagem">Garage</button>
+                </div>
+                <button class="btn btn--cyan btn--sm" type="button" id="room-again">
+                  <svg class="ico" aria-hidden="true"><use href="#i-wand-sparkles" /></svg><span data-pt="Outra versão">Another version</span>
+                </button>
+              </div>
+              <ul class="stats" data-reveal>
+                <li class="stat"><b>14</b><span data-pt="temas de sala">room themes</span></li>
+                <li class="stat"><b>5</b><span data-pt="geradores de cena">scene generators</span></li>
+                <li class="stat"><b>59</b><span data-pt="objetos de cenário">scenery objects</span></li>
+                <li class="stat"><b>19</b><span data-pt="tipos de piso">floor types</span></li>
+              </ul>
+              <ul class="bullets" data-reveal>
+                <li>
+                  <svg class="ico" aria-hidden="true"><use href="#i-map" /></svg><span data-pt="Geradores de cena inteira: quarteirão, docas, boate e mais, com prévia antes de aplicar.">Full-scene generators: city block, docks, club and more, with a preview before you apply.</span>
+                </li>
+                <li>
+                  <svg class="ico" aria-hidden="true"><use href="#i-cloud-rain" /></svg><span data-pt="Dia, crepúsculo e noite, chuva e neblina.">Day, dusk and night, rain and mist.</span>
+                </li>
+                <li>
+                  <svg class="ico" aria-hidden="true"><use href="#i-ruler" /></svg><span data-pt="Régua em metros, pings, minimapa, desfazer e refazer.">A ruler in meters, pings, a minimap, undo and redo.</span>
+                </li>
+                <li>
+                  <svg class="ico" aria-hidden="true"><use href="#i-gauge" /></svg><span data-pt="Modo gráfico leve para máquinas modestas.">A lightweight graphics mode for low-end machines.</span>
+                </li>
+              </ul>
+            </div>
+            <div class="roomdemo cut" data-reveal style="--d: 1">
+              <div class="roomdemo__view">
+                <canvas id="room-canvas" aria-hidden="true"></canvas>
+                <div class="roomdemo__label" aria-hidden="true"><small data-pt="Sala mágica">Magic room</small><b id="room-name">Bar</b></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="sec" id="play">
+        <span class="sec__no" aria-hidden="true">05</span>
+        <div class="wrap">
+          <header class="sec__head" data-reveal>
+            <p class="kicker" data-pt="05 · Como funciona">05 · How it works</p>
+            <h2 class="h2" data-pt-html="Três passos até a <em>primeira cena.</em>">Three steps to the <em>first scene.</em></h2>
+          </header>
+          <ol class="steps">
+            <li class="step" data-reveal>
+              <h3 data-pt="Abra a mesa">Open the table</h3>
+              <p data-pt="A campanha é criada e o link sai para o grupo. Os jogadores não instalam nada.">The campaign is created and a link goes out to the group. Players install nothing.</p>
+            </li>
+            <li class="step" data-reveal style="--d: 1">
+              <h3 data-pt="Monte a equipe">Build the crew</h3>
+              <p data-pt="Cada jogador cria o personagem passo a passo, com história de vida e tudo, e pode proteger com um PIN.">Each player builds a character step by step, life story included, and can lock it with a PIN.</p>
+            </li>
+            <li class="step" data-reveal style="--d: 2">
+              <h3 data-pt="Jogue">Play</h3>
+              <p data-pt="O mestre de IA conduz a sessão. Tudo fica salvo para a próxima.">The AI Game Master runs the session. Everything is saved for next time.</p>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="final" id="contact">
+        <div class="wrap" data-reveal>
+          <p class="kicker" data-pt="Sua vez">Your turn</p>
+          <h2 data-pt-html="Tem uma cadeira <em>vaga</em> na mesa.">There's an <em>open seat</em> at the table.</h2>
+          <p data-pt="Quer jogar no alfa, trazer o seu grupo ou só saber mais? Escreva para a gente.">Want to play in the alpha, bring your group or just find out more? Write to us.</p>
+          <div class="final__cta">
+            <span class="btn-glow"
+              ><a class="btn btn--primary" href="mailto:founder@rpged.com.br"
+                ><svg class="ico" aria-hidden="true"><use href="#i-mail" /></svg><span data-pt="Fale com a gente">Contact us</span></a
+              ></span
+            >
+            <a class="final__mail" href="mailto:founder@rpged.com.br">founder@rpged.com.br</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="wrap foot">
+      <a class="brand" href="#top" aria-label="RPGed">
+        <span class="brand__word">RPG<b>ed</b></span>
+      </a>
+      <span>© 2026 RPGed</span>
+      <div class="foot__end">
+        <a href="mailto:founder@rpged.com.br">founder@rpged.com.br</a>
+        <a href="privacy" data-pt="Privacidade">Privacy</a>
+        <a href="credits.txt" data-pt="Créditos de código aberto">Open-source credits</a>
+        <a href="#top" data-pt="Voltar ao topo">Back to top</a>
+      </div>
+      <p class="foot__note" data-pt="Feito com o Claude. O RPGed é um projeto independente, sem vínculo com a Anthropic.">Built on Claude. RPGed is an independent project and is not affiliated with Anthropic.</p>
+    </footer>
+
+    <div id="lines" hidden>
+      <span data-id="gm" data-pt="Narrador">Narrator</span>
+      <span data-id="guard" data-pt="Segurança">Guard</span>
+      <span data-id="n1" data-pt="Três da manhã. O fliperama fechou há uma hora, mas a luz dos fundos continua acesa.">Three a.m. The arcade closed an hour ago, but the light in the back is still on.</span>
+      <span data-id="p1" data-pt="Vou na frente. Colada na parede, sem barulho.">I'll go first. Hugging the wall, no noise.</span>
+      <span data-id="r1" data-pt="Nara · Teste de Furtividade">Nara · Stealth check</span>
+      <span data-id="n2" data-pt="Ninguém te ouve. Pelo vidro: dois seguranças e uma maleta aberta em cima da mesa.">Nobody hears you. Through the glass: two guards and an open briefcase on the table.</span>
+      <span data-id="p2" data-pt="Chega de sutileza. Eu entro.">Enough subtlety. I'm going in.</span>
+      <span data-id="r2" data-pt="Theo · Ataque">Theo · Attack</span>
+      <span data-id="r3" data-pt="Theo · Dano">Theo · Damage</span>
+      <span data-id="n3" data-pt="O primeiro cai antes de sacar. O segundo larga a arma e levanta as mãos.">The first one drops before he can draw. The second drops his gun and raises his hands.</span>
+      <span data-id="p3" data-pt="Segura ele. Eu faço as perguntas.">Hold him. I'll ask the questions.</span>
+      <span data-id="passed" data-pt="passou">passed</span>
+      <span data-id="hit" data-pt="acertou">hit</span>
+      <span data-id="crit" data-pt="crítico">critical</span>
+      <span data-id="fumble" data-pt="falha crítica">fumble</span>
+      <span data-id="damage" data-pt="de dano">damage</span>
+      <span data-id="tension" data-pt="Tensão">Tension</span>
+      <span data-id="fight" data-pt="Luta">Fight</span>
+      <span data-id="thinking" data-pt="pensando">thinking</span>
+      <span data-id="go" data-pt="continuar">keep going</span>
+      <span data-id="stop" data-pt="parar">stop</span>
+      <span data-id="verdict" data-pt="3 a 1 · a mesa continua">3 to 1 · the table plays on</span>
+      <span data-id="sealed" data-pt="selado">sealed</span>
+      <span data-id="los-clear" data-pt="Linha livre · {n} m">Clear line · {n} m</span>
+      <span data-id="los-glass" data-pt="Através do vidro · {n} m">Through the glass · {n} m</span>
+      <span data-id="los-wall" data-pt="Bloqueada pela parede">Blocked by the wall</span>
+      <span data-id="los-door" data-pt="Bloqueada pela porta fechada">Blocked by the closed door</span>
+      <span data-id="los-cover" data-pt="Alvo em cobertura, tiro recusado · caixote com {n} PV">Target in cover, shot refused · crate at {n} HP</span>
+      <span data-id="los-refused" data-pt="Tiro recusado pelo servidor: sem linha de visão">Shot refused by the server: no line of sight</span>
+      <span data-id="los-chip" data-pt="Você atira no caixote · ficou com {n} PV">You shoot the crate instead · {n} HP left</span>
+      <span data-id="los-label" data-pt="Demonstração de linha de visão">Line of sight demo</span>
+      <span data-id="vs" data-pt="contra">vs</span>
+      <span data-id="los-broken" data-pt="Cobertura destruída. O alvo ficou exposto.">Cover destroyed. The target is exposed.</span>
+      <span data-id="los-hit" data-pt="Acertou! {n} de dano.">Hit! {n} damage.</span>
+    </div>
+
+    <script src="assets/js/i18n.js"></script>
+    <script type="module" src="assets/js/site.js"></script>
+  </body>
+</html>

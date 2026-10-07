@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en" data-lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title data-pt="Política de Privacidade · RPGed">Privacy Policy · RPGed</title>
+    <meta name="description" content="How RPGed handles your information." data-i18n-attr="content" data-pt-content="Como o RPGed trata as suas informações." />
+    <meta name="theme-color" content="#050305" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <link rel="preload" href="assets/fonts/saira-extra-condensed-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="assets/css/site.css" />
+    <script>
+      (function () {
+        var root = document.documentElement;
+        var lang = 'en';
+        try {
+          var asked = new URLSearchParams(location.search).get('lang');
+          var saved = localStorage.getItem('rpged.lang');
+          lang = (asked || saved || navigator.language || 'en').toLowerCase().indexOf('pt') === 0 ? 'pt' : 'en';
+        } catch (error) {}
+        root.classList.add('js');
+        root.setAttribute('data-lang', lang);
+        if (lang === 'pt') {
+          root.lang = 'pt-BR';
+          root.classList.add('i18n-wait');
+          setTimeout(function () {
+            root.classList.remove('i18n-wait');
+          }, 1500);
+        }
+      })();
+    </script>
+  </head>
+  <body class="page">
+    <a class="skip" href="#main" data-pt="Pular para o conteúdo">Skip to content</a>
+    <header class="nav is-solid">
+      <a class="brand" href="./" aria-label="RPGed">
+        <svg class="brand__mark" viewBox="0 0 64 64" aria-hidden="true">
+          <polygon points="32,3 58,17.5 58,46.5 32,61 6,46.5 6,17.5" fill="#12050a" stroke="#ff1f3d" stroke-width="4" />
+          <path d="M22 44V20h12c6 0 9 3 9 7.5S40 35 34 35h-5l10 9" fill="none" stroke="#ff1f3d" stroke-width="5" stroke-linejoin="round" stroke-linecap="square" />
+        </svg>
+        <span class="brand__word">RPG<b>ed</b></span>
+      </a>
+      <div class="nav__side" style="margin-left: auto">
+        <div class="lang" role="group" aria-label="Language" data-i18n-attr="aria-label" data-pt-aria-label="Idioma">
+          <button type="button" data-set-lang="pt" aria-pressed="false" aria-label="PT, Português" lang="pt-BR">PT</button>
+          <button type="button" data-set-lang="en" aria-pressed="true" aria-label="EN, English" lang="en">EN</button>
+        </div>
+        <a class="btn btn--primary btn--sm" href="mailto:founder@rpged.com.br" data-pt="Contato">Contact us</a>
+      </div>
+    </header>
+
+    <main class="page__main" id="main">
+      <article class="wrap prose">
+        <p class="kicker">RPGed</p>
+        <h1 data-pt="Política de Privacidade">Privacy Policy</h1>
+        <p class="stamp" data-pt="Última atualização: 7 de outubro de 2026">Last updated: October 7, 2026</p>
+
+        <p class="lede" data-pt="O RPGed respeita a privacidade dos usuários.">RPGed respects user privacy.</p>
+        <p data-pt="Coletamos apenas as informações necessárias para operar a plataforma e melhorar a experiência de uso.">We collect only the information necessary to operate the platform and improve the user experience.</p>
+
+        <h2 data-pt="Este site">This website</h2>
+        <ul>
+          <li data-pt="Não usamos cookies nem exibimos anúncios.">We set no cookies and show no ads.</li>
+          <li data-pt="As visitas são contadas com o Cloudflare Web Analytics, uma ferramenta de medição que funciona sem cookies.">Visits are counted with Cloudflare Web Analytics, a measurement tool that works without cookies.</li>
+          <li data-pt="A sua escolha de idioma fica salva no seu próprio navegador, para a página abrir no mesmo idioma da próxima vez. Ela não sai do seu dispositivo.">
+            Your language choice is saved in your own browser so the page opens in the same language next time. It never leaves your device.
+          </li>
+          <li data-pt="O site é entregue pela Cloudflare, que processa dados técnicos, como endereços IP, para servir as páginas e mantê-las seguras.">
+            The site is delivered through Cloudflare, which processes technical data such as IP addresses to serve the pages and keep them secure.
+          </li>
+        </ul>
+
+        <h2 data-pt="Quando você escreve para nós">When you write to us</h2>
+        <p data-pt="Se você nos mandar um e-mail, recebemos o seu endereço e o que você decidir incluir. Usamos essas informações só para responder.">
+          If you email us, we receive your address and whatever you choose to include. We use that information only to answer you.
+        </p>
+
+        <h2 data-pt="A plataforma">The platform</h2>
+        <p data-pt="O RPGed ainda está em desenvolvimento. Conforme o alfa abrir para os jogadores, esta página será atualizada para descrever o que a plataforma guarda e por quê.">
+          RPGed is still in development. As the alpha opens to players, this page will be updated to describe what the platform stores and why.
+        </p>
+
+        <h2 data-pt="Dúvidas">Questions</h2>
+        <p><span data-pt="Para dúvidas, fale com:">For questions, contact:</span> <a href="mailto:founder@rpged.com.br">founder@rpged.com.br</a></p>
+      </article>
+    </main>
+
+    <footer class="wrap foot">
+      <a class="brand" href="./" aria-label="RPGed">
+        <span class="brand__word">RPG<b>ed</b></span>
+      </a>
+      <span>© 2026 RPGed</span>
+      <div class="foot__end">
+        <a href="mailto:founder@rpged.com.br">founder@rpged.com.br</a>
+        <a href="./" data-pt="Voltar para o início">Back to home</a>
+      </div>
+    </footer>
+    <script src="assets/js/i18n.js"></script>
+  </body>
+</html>

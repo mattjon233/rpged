@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en" data-lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title data-pt="Página não encontrada · RPGed">Page not found · RPGed</title>
+    <meta name="robots" content="noindex" />
+    <meta name="theme-color" content="#050305" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/assets/css/site.css" />
+    <script>
+      (function () {
+        var root = document.documentElement;
+        var lang = 'en';
+        try {
+          var asked = new URLSearchParams(location.search).get('lang');
+          var saved = localStorage.getItem('rpged.lang');
+          lang = (asked || saved || navigator.language || 'en').toLowerCase().indexOf('pt') === 0 ? 'pt' : 'en';
+        } catch (error) {}
+        root.classList.add('js');
+        root.setAttribute('data-lang', lang);
+        if (lang === 'pt') {
+          root.lang = 'pt-BR';
+          root.classList.add('i18n-wait');
+          setTimeout(function () {
+            root.classList.remove('i18n-wait');
+          }, 1500);
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <main class="lost">
+      <p class="lost__code" aria-hidden="true">404</p>
+      <h1 class="h3" data-pt-html="Esta sala ainda está sob a <em>névoa de guerra.</em>">This room is still under the <em>fog of war.</em></h1>
+      <p class="lead" data-pt="A página que você procurou não existe ou mudou de lugar.">The page you were looking for doesn't exist or has moved.</p>
+      <a class="btn btn--primary" href="/" data-pt="Voltar para a mesa">Back to the table</a>
+    </main>
+    <script src="/assets/js/i18n.js"></script>
+  </body>
+</html>
